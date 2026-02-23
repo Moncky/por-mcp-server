@@ -1,0 +1,17 @@
+[project]
+name = "por-mcp-server"
+version = "0.1.0"
+description = "MCP server for querying UK Scouts Policy, Organisation and Rules (POR)"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]",
+    "curl-cffi",
+    "pymupdf",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["por_server.py"]
