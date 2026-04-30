@@ -121,6 +121,10 @@ async def search_por(query: str) -> str:
     return result
 
 
-if __name__ == "__main__":
+def main() -> None:
     logger.info("Starting POR MCP server (stdio transport)")
     mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()

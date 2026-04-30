@@ -9,6 +9,9 @@ dependencies = [
     "pymupdf",
 ]
 
+[project.scripts]
+por-mcp-server = "por_server:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

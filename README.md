@@ -2,16 +2,65 @@
 
 MCP server that lets an LLM query the UK Scouts Policy, Organisation and Rules (POR), including Scottish variations and annexes. On first use it downloads the official POR PDF and caches the extracted text in memory, then exposes a single MCP tool: `search_por`.
 
-## Build and run (uv)
+> **Requires:** [`uv`](https://docs.astral.sh/uv/getting-started/installation/) must be installed and on your `PATH` for all installation methods below.
+
+## Install with Claude Code
+
+Add the server directly from GitHub — no manual cloning required:
+
+```bash
+claude mcp add por -- uvx --from git+https://github.com/Moncky/por-mcp-server por-mcp-server
+```
+
+This fetches the package and registers it as an MCP server called `por`. Verify with:
+
+```bash
+claude mcp list
+```
+
+To pin a specific release or commit, append `@<tag-or-sha>`:
+
+```bash
+claude mcp add por -- uvx --from "git+https://github.com/Moncky/por-mcp-server@v0.1.0" por-mcp-server
+```
+
+## Install with Claude Desktop
+
+Open your Claude Desktop config file:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add the following entry (create the `mcpServers` object if it doesn't exist):
+
+```jsonc
+{
+  "mcpServers": {
+    "por": {
+      "command": "uvx",
+      "args": [
+        "--from", "git+https://github.com/Moncky/por-mcp-server",
+        "por-mcp-server"
+      ]
+    }
+  }
+}
+```
+
+Save the file and restart Claude Desktop. You should see `por` listed under connected MCP servers.
+
+To pin a specific release, replace the `--from` value with e.g. `git+https://github.com/Moncky/por-mcp-server@v0.1.0`.
+
+## Build and run (local clone / uv)
 
 ```bash
 cd por-mcp-server
 uv run por_server.py
 ```
 
-The server speaks MCP over stdio, so you normally do **not** run it directly. Instead, point your MCP client (e.g. Cursor, Claude Desktop) at the server.
+The server speaks MCP over stdio, so you normally do **not** run it directly. To wire it up after cloning:
 
-Example Claude Desktop config snippet:
+**Claude Desktop** (`claude_desktop_config.json`):
 
 ```jsonc
 {
@@ -28,6 +77,12 @@ Example Claude Desktop config snippet:
 }
 ```
 
+**Claude Code**:
+
+```bash
+claude mcp add por -- uv run --directory /absolute/path/to/por-mcp-server por_server.py
+```
+
 ## Test with MCP Inspector
 
 ```bash
@@ -41,13 +96,7 @@ cd por-mcp-server
 docker build -t por-mcp-server:latest .
 ```
 
-To run the server via Docker (stdio MCP, no ports exposed):
-
-```bash
-docker run -i --rm por-mcp-server:latest
-```
-
-Example Claude Desktop config that runs via Docker:
+**Claude Desktop** (`claude_desktop_config.json`):
 
 ```jsonc
 {
@@ -63,6 +112,12 @@ Example Claude Desktop config that runs via Docker:
     }
   }
 }
+```
+
+**Claude Code**:
+
+```bash
+claude mcp add por -- docker run -i --rm por-mcp-server:latest
 ```
 
 ## Tool: `search_por`
